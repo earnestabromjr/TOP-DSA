@@ -32,10 +32,13 @@ class HashMap {
 	}
 
 	remove(key) {
+		const index = this.hash(key);
 		if (this.has(key)) {
-			this.get(key);
+			delete this.table[index];
+			return true;
+		} else {
+			return false;
 		}
-		return undefined;
 	}
 
 	length() {
@@ -48,7 +51,11 @@ class HashMap {
 		return count;
 	}
 
-	clear() {}
+	clear() {
+		for (let i = 0; i < this.table.length; i++) {
+			this.table[i] = null;
+		}
+	}
 
 	keys() {}
 }
