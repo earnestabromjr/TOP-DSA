@@ -1,19 +1,25 @@
 class HashMap {
-	constructor() {}
-	LOAD_FACTOR = 0.75;
-	CAPACITY = 16;
+	constructor(capacity = 16, loadFactor = 0.75) {
+		this.bucket = new Array(capacity);
+		this.key = null;
+		this.value = null;
+		this.capacity = capacity;
+		this.loadFactor = loadFactor;
+	}
 
 	hash(key) {
 		let hashCode = 0;
 
 		const primeNumber = 31;
 		for (let i = 0; i < key.length; i++) {
-			hashCode += (primeNumber * hashCode + key.charCodeAt(i)) % this.CAPACITY;
+			hashCode += (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
 		}
 		return hashCode;
 	}
 
-	set(key, value) {}
+	set(key, value) {
+		hashedKey = this.hash(key);
+	}
 
 	get(key) {}
 
