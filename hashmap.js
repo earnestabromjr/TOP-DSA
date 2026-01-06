@@ -1,8 +1,6 @@
 class HashMap {
 	constructor(capacity = 16, loadFactor = 0.75) {
-		this.bucket = new Array(capacity);
-		this.key = null;
-		this.value = null;
+		this.table = new Array(capacity);
 		this.capacity = capacity;
 		this.loadFactor = loadFactor;
 	}
@@ -18,16 +16,37 @@ class HashMap {
 	}
 
 	set(key, value) {
-		hashedKey = this.hash(key);
+		let index = this.hash(key);
+		this.table[index] = value;
 	}
 
-	get(key) {}
+	get(key) {
+		let index = this.hash(key);
+		return this.table[index];
+	}
 
-	has(key) {}
+	has(key) {
+		let index = this.hash(key);
+		if (this.table[index]) return true;
+		return false;
+	}
 
-	remove(key) {}
+	remove(key) {
+		if (this.has(key)) {
+			this.get(key);
+		}
+		return undefined;
+	}
 
-	length() {}
+	length() {
+		let count = 0;
+		for (let i = 0; i < this.table.length; i++) {
+			if (this.table[i] !== null) {
+				count++;
+			}
+		}
+		return count;
+	}
 
 	clear() {}
 
