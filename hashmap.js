@@ -1,4 +1,5 @@
 class HashMap {
+	// TODO: refactor to use linked list
 	constructor(capacity = 16, loadFactor = 0.75) {
 		this.table = new Array(capacity);
 		this.capacity = capacity;
@@ -15,6 +16,8 @@ class HashMap {
 		return hashCode;
 	}
 
+	// TODO: implement using linked list and the load factor
+	// Array size must double when load factor is exceeded
 	set(key, value) {
 		let index = this.hash(key);
 		this.table[index] = value;
