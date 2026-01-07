@@ -1,6 +1,7 @@
 class Node {
-	constructor(value = 0, next = null) {
+	constructor(key = null, value = null, next = null) {
 		this.value = value;
+		this.key = key;
 		this.next = next;
 	}
 }
@@ -9,8 +10,8 @@ export default class LinkedList {
 		this.head = null;
 	}
 
-	append(value) {
-		const newNode = new Node(value);
+	append(value, key) {
+		const newNode = new Node(key, value);
 		if (!this.head) {
 			this.head = newNode;
 			return;
@@ -23,7 +24,7 @@ export default class LinkedList {
 	}
 
 	prepend(value) {
-		let newHead = new Node(value);
+		let newHead = new Node(key, value);
 		newHead.next = this.head;
 		this.head = newHead;
 		return;
@@ -40,14 +41,14 @@ export default class LinkedList {
 	}
 	printHead() {
 		if (!this.head || this.head.value == null) return undefined;
-		return this.head.value;
+		return this.head.key + " " + this.head.value;
 	}
 
 	printTail() {
 		if (!this.head || this.head.value == null) return undefined;
 		let node = this.head;
 		while (node !== null) {
-			if (node.next === null) return node.value;
+			if (node.next === null) return node.key + " " + node.value;
 			node = node.next;
 		}
 	}
@@ -75,7 +76,7 @@ export default class LinkedList {
 		let result = "";
 		let linknode = this.head;
 		while (linknode != null) {
-			result += `( ${linknode.value} ) -> `;
+			result += `( key: ${linknode.key} value: ${linknode.value} ) -> `;
 			linknode = linknode.next;
 		}
 		result += "null";
@@ -91,6 +92,15 @@ export default class LinkedList {
 			node = node.next;
 		}
 		return false;
+	}
+
+	findKey(key) {
+		let node = this.head;
+		for (let i = 0; i < this.size(); i++) {
+			if (node.key === key) return node.key + " " + node.value;
+			if (node.next === null && node.key !== key) return null;
+			node = node.next;
+		}
 	}
 
 	findIndex(value) {

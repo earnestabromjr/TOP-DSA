@@ -1,3 +1,5 @@
+import LinkedList from "./linkedList.js";
+
 class HashMap {
 	// TODO: refactor to use linked list
 	constructor(capacity = 16, loadFactor = 0.75) {
