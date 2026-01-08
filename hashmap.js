@@ -6,6 +6,7 @@ class HashMap {
 		this.table = new Array(capacity).fill(null).map(() => new LinkedList());
 		this.capacity = capacity;
 		this.loadFactor = loadFactor;
+		this.size = 0;
 	}
 
 	hash(key) {
@@ -18,27 +19,62 @@ class HashMap {
 		return hashCode;
 	}
 
-	// TODO: implement using linked list and the load factor
+	_checkLoadFactor() {
+		const currentLoad = this.size() / this.capacity;
+		if (currentLoad > this.loadFactor) {
+			this._resize();
+		}
+	}
+
+	_resize() {
+		const oldTable = this.table;
+		const oldSize = this.size;
+		this.capacity *= 2;
+		this.table = new Array(this.capacity)
+			.fill(null)
+			.map(() => new LinkedList());
+
+		for (let bucket of oldTable) {
+			let current = bucket.head;
+			while (current) {
+				this._rehashEntry(current.key, current.value);
+				current = current.next;
+			}
+		}
+		this.size = oldSize;
+	}
+
+	_rehashEntry(key, value) {
+		let index = this.hash(key);
+		this.table[index].append(value, key);
+	}
+
 	// Array size must double when load factor is exceeded
 	set(key, value) {
 		let index = this.hash(key);
 		let bucket = this.table[index];
+		let isNewEntry = true;
+
 		if (bucket.head) {
 			let current = bucket.head;
 			while (current) {
 				if (current.key === key) {
 					current.value = value;
+					isNewEntry = false;
 					return;
 				}
 				current = current.next;
 			}
 		}
 		bucket.append(value, key);
+		this.size++;
+		this._checkLoadFactor();
 	}
 
 	get(key) {
 		let index = this.hash(key);
-		return this.table[index];
+		let bucket = this.table[index];
+		if (bucket.head.key === key) return;
 	}
 
 	has(key) {
@@ -48,23 +84,29 @@ class HashMap {
 	}
 
 	remove(key) {
-		const index = this.hash(key);
-		if (this.has(key)) {
-			delete this.table[index];
+		let index = this.hash(key);
+		let bucket = this.table[index];
+		if (!bucket.head) return false;
+
+		if (bucket.head.key === key) {
+			bucket.pop();
+			this.size--;
 			return true;
-		} else {
-			return false;
 		}
+		let current = bucket.head;
+		while (current) {
+			if (current.next.key === key) {
+				current.next = current.next.next;
+				this.size--;
+				return true;
+			}
+			current = current.next;
+		}
+		return false;
 	}
 
-	length() {
-		let count = 0;
-		for (let i = 0; i < this.table.length; i++) {
-			if (this.table[i] !== null) {
-				count++;
-			}
-		}
-		return count;
+	size() {
+		return this.size;
 	}
 
 	clear() {
