@@ -23,11 +23,10 @@ export default class LinkedList {
 		current.next = newNode;
 	}
 
-	prepend(value) {
+	prepend(key, value) {
 		let newHead = new Node(key, value);
 		newHead.next = this.head;
 		this.head = newHead;
-		return;
 	}
 
 	size() {
@@ -40,12 +39,12 @@ export default class LinkedList {
 		return count;
 	}
 	printHead() {
-		if (!this.head || this.head.value == null) return undefined;
+		if (!this.head) return undefined;
 		return this.head.key + " " + this.head.value;
 	}
 
 	printTail() {
-		if (!this.head || this.head.value == null) return undefined;
+		if (!this.head) return undefined;
 		let node = this.head;
 		while (node !== null) {
 			if (node.next === null) return node.key + " " + node.value;
@@ -54,13 +53,13 @@ export default class LinkedList {
 	}
 
 	at(index) {
-		if (index > this.size()) return undefined;
+		if (index >= this.size()) return undefined;
 		let current = this.head;
 		for (let i = 0; i < index; i++) {
 			if (current === null) return undefined;
 			current = current.next;
 		}
-		return current ? current.value : null;
+		return current ? current.key + " " + current.value : null;
 	}
 
 	pop() {
@@ -75,7 +74,7 @@ export default class LinkedList {
 
 		let result = "";
 		let linknode = this.head;
-		while (linknode != null) {
+		while (linknode !== null) {
 			result += `( key: ${linknode.key} value: ${linknode.value} ) -> `;
 			linknode = linknode.next;
 		}
@@ -85,7 +84,6 @@ export default class LinkedList {
 
 	contains(value) {
 		if (!this.head) return false;
-		if (this.head.value === value) return true;
 		let node = this.head;
 		while (node !== null) {
 			if (node.value === value) return true;
@@ -98,17 +96,17 @@ export default class LinkedList {
 		let node = this.head;
 		for (let i = 0; i < this.size(); i++) {
 			if (node.key === key) return node.key + " " + node.value;
-			if (node.next === null && node.key !== key) return null;
 			node = node.next;
 		}
+		return null;
 	}
 
 	findIndex(value) {
 		let node = this.head;
 		for (let i = 0; i < this.size(); i++) {
 			if (value === node.value) return i;
-			if (node.next === null && node.value !== value) return -1;
 			node = node.next;
 		}
+		return -1;
 	}
 }

@@ -3,7 +3,7 @@ import LinkedList from "./linkedList.js";
 class HashMap {
 	// TODO: refactor to use linked list
 	constructor(capacity = 16, loadFactor = 0.75) {
-		this.table = new Array(capacity);
+		this.table = new Array(capacity).fill(null).map(() => new LinkedList());
 		this.capacity = capacity;
 		this.loadFactor = loadFactor;
 	}
@@ -22,7 +22,18 @@ class HashMap {
 	// Array size must double when load factor is exceeded
 	set(key, value) {
 		let index = this.hash(key);
-		this.table[index] = value;
+		let bucket = this.table[index];
+		if (bucket.head) {
+			let current = bucket.head;
+			while (current) {
+				if (current.key === key) {
+					current.value = value;
+					return;
+				}
+				current = current.next;
+			}
+		}
+		bucket.append(value, key);
 	}
 
 	get(key) {
