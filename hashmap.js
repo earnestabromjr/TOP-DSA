@@ -74,7 +74,16 @@ class HashMap {
 	get(key) {
 		let index = this.hash(key);
 		let bucket = this.table[index];
-		if (bucket.head.key === key) return;
+		if (!bucket.head) return undefined;
+
+		let current = bucket.head;
+		while (current) {
+			if (current.key === key) {
+				return current.value;
+			}
+			current = current.next;
+		}
+		return undefined;
 	}
 
 	has(key) {
@@ -111,8 +120,9 @@ class HashMap {
 
 	clear() {
 		for (let i = 0; i < this.table.length; i++) {
-			this.table[i] = null;
+			this.table[i] = new LinkedList();
 		}
+		this.size = 0;
 	}
 
 	keys() {}
