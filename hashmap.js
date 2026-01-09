@@ -83,12 +83,19 @@ class HashMap {
 			}
 			current = current.next;
 		}
-		return undefined;
+		return null;
 	}
 
 	has(key) {
 		let index = this.hash(key);
-		if (this.table[index]) return true;
+		let bucket = this.table[index];
+		if (bucket.head.key === key) return true;
+
+		let current = bucket.head;
+		while (current) {
+			if (current.key === key) return true;
+			current = current.next;
+		}
 		return false;
 	}
 
@@ -125,5 +132,34 @@ class HashMap {
 		this.size = 0;
 	}
 
-	keys() {}
+	keys() {
+		let keys = [];
+		for (let bucket of this.table) {
+			let current = bucket.head;
+			while (current) {
+				keys.push(current.key);
+				current = current.next;
+			}
+		}
+		return keys;
+	}
+
+	values() {
+		let values = [];
+		for (let bucket of this.table) {
+			let current = bucket.head;
+			while (current) {
+				values.push(current.value);
+				current = current.next;
+			}
+		}
+		return values;
+	}
+
+	entries() {
+		let entries = [];
+		let buckets = this.table;
+		buckets.reduce((node) => {});
+		return entries;
+	}
 }
