@@ -1,7 +1,6 @@
 import LinkedList from "./linkedList.js";
 
-class HashMap {
-	// TODO: refactor to use linked list
+export default class HashMap {
 	constructor(capacity = 16, loadFactor = 0.75) {
 		this.table = new Array(capacity).fill(null).map(() => new LinkedList());
 		this.capacity = capacity;
@@ -14,13 +13,13 @@ class HashMap {
 
 		const primeNumber = 31;
 		for (let i = 0; i < key.length; i++) {
-			hashCode += (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
+			hashCode = (primeNumber * hashCode + key.charCodeAt(i)) % this.capacity;
 		}
-		return hashCode;
+		return Math.abs(hashCode) % this.capacity;
 	}
 
 	_checkLoadFactor() {
-		const currentLoad = this.size() / this.capacity;
+		const currentLoad = this.size / this.capacity;
 		if (currentLoad > this.loadFactor) {
 			this._resize();
 		}
@@ -121,7 +120,7 @@ class HashMap {
 		return false;
 	}
 
-	size() {
+	showSize() {
 		return this.size;
 	}
 
@@ -158,8 +157,14 @@ class HashMap {
 
 	entries() {
 		let entries = [];
-		let buckets = this.table;
-		buckets.reduce((node) => {});
+		for (let bucket of this.table) {
+			let current = bucket.head;
+			while (current) {
+				entries.push([current.key, current.value]);
+				current = current.next;
+			}
+		}
+
 		return entries;
 	}
 }
