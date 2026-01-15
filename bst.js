@@ -21,23 +21,47 @@ class Tree {
 		node.right = this.buildTree(array, mid + 1, end);
 		return node;
 	}
+
+	prettyPrint(node, prefix = "", isLeft = true) {
+		if (node === null) {
+			return;
+		}
+		if (node.right !== null) {
+			this.prettyPrint(
+				node.right,
+				`${prefix}${isLeft ? "│   " : "    "}`,
+				false,
+			);
+		}
+		console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+		if (node.left !== null) {
+			this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+		}
+	}
+
+	insert(value) {
+		const newNode = new Node(value);
+		let currentRoot = this.root;
+		if (currentRoot === null) return newNode;
+		let current = currentRoot;
+		while (current !== null) {
+			if (current.data === value) return;
+			if (current.data > value && current.left === null) {
+				current = current.left;
+			} else if (current.data < value && current.right === null) {
+				current = current.right;
+			} else break;
+		}
+		if (current.data > value) {
+			current.left = newNode;
+		} else {
+			current.right = newNode;
+		}
+	}
 }
 
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 
 const testTree = new Tree(testArray);
 
-const prettyPrint = (node, prefix = "", isLeft = true) => {
-	if (node === null) {
-		return;
-	}
-	if (node.right !== null) {
-		prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
-	}
-	console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-	if (node.left !== null) {
-		prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
-	}
-};
-
-prettyPrint(testTree.root);
+testTree.prettyPrint(testTree.root);
