@@ -45,10 +45,9 @@ class Tree {
 		if (currentRoot === null) return newNode;
 		let current = currentRoot;
 		while (current !== null) {
-			if (current.data === value) return;
-			if (current.data > value && current.left === null) {
+			if (current.data > value && current.left !== null) {
 				current = current.left;
-			} else if (current.data < value && current.right === null) {
+			} else if (current.data < value && current.right !== null) {
 				current = current.right;
 			} else break;
 		}
@@ -63,5 +62,9 @@ class Tree {
 const testArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 
 const testTree = new Tree(testArray);
+
+testTree.prettyPrint(testTree.root);
+
+testTree.insert(10);
 
 testTree.prettyPrint(testTree.root);
