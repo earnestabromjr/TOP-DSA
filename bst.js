@@ -39,111 +39,13 @@ class Tree {
     }
   }
 
-  _searchHelper(root, data, findInsertionPoint = false) {
-    if (root === null) return null;
+  _searchHelper(root, data, findInsertionPoint = false) {}
 
-    let current = root;
-    let parent = null;
+  insert(value) {}
 
-    while (current !== null) {
-      if (data === current.data) {
-        return findInsertionPoint ? { parent, direction: null, exists: true } : current;
-      }
+  delete(value) {}
 
-      parent = current;
-      if (data < current.data) {
-        current = current.left;
-        if (findInsertionPoint && current === null) {
-          return { parent, direction: 'left', exists: false };
-        }
-      } else {
-        current = current.right;
-        if (findInsertionPoint && current === null) {
-          return { parent, direction: 'right', exists: false };
-        }
-      }
-    }
-
-    if (findInsertionPoint) {
-      return { parent: null, direction: null, exists: false };
-    }
-    return null;
-  }
-
-  insert(value) {
-    const newNode = new Node(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-      return true;
-    }
-
-    const searchResult = this._searchHelper(this.root, value, true);
-
-    if (searchResult.exists) {
-      return false;
-    }
-
-    if (searchResult.parent === null) {
-      this.root = newNode;
-    } else if (searchResult.direction === 'left') {
-      searchResult.parent.left = newNode;
-    } else if (searchResult.direction === 'right') {
-      searchResult.parent.right = newNode;
-    }
-
-    return true;
-  }
-
-  delete(value) {
-    const searchResult = this._searchHelper(this.root, value);
-
-    if (searchResult === null) {
-      return false;
-    }
-
-    const nodeToDelete = searchResult.node;
-
-    if (nodeToDelete.left === null && nodeToDelete.right === null) {
-      if (searchResult.parent === null) {
-        this.root = null;
-      } else if (searchResult.parent.left === nodeToDelete) {
-        searchResult.parent.left = null;
-      } else {
-        searchResult.parent.right = null;
-      }
-    } else if (nodeToDelete.left === null || nodeToDelete.right === null) {
-      const child = nodeToDelete.left || nodeToDelete.right;
-      if (searchResult.parent === null) {
-        this.root = child;
-      } else if (searchResult.parent.left === nodeToDelete) {
-        searchResult.parent.left = child;
-      } else {
-        searchResult.parent.right = child;
-      }
-    } else {
-      const inOrderSuccessor = this._findInOrderSuccessor(nodeToDelete.right);
-      const inOrderSuccessorParent = this._searchHelper(this.root, inOrderSuccessor.data);
-
-      nodeToDelete.data = inOrderSuccessor.data;
-
-      if (inOrderSuccessorParent.left === inOrderSuccessor) {
-        inOrderSuccessorParent.left = inOrderSuccessor.right;
-      } else {
-        inOrderSuccessorParent.right = inOrderSuccessor.right;
-      }
-    }
-
-    return true;
-  }
-
-  _findInOrderSuccessor(node) {
-    let current = node;
-    while (current.left !== null) {
-      current = current.left;
-    }
-    return current;
-  }
+  _findInOrderSuccessor(node) {}
 
   search(value) {
     return this._searchHelper(this.root, value);
