@@ -39,7 +39,36 @@ class Tree {
     }
   }
 
-  _searchHelper(root, data, findInsertionPoint = false) {}
+  _searchHelper(root, data, findInsertionPoint = false) {
+    if (root === null) return null;
+
+    let current = root;
+    while (current !== null) {
+      if (data === current.data) {
+        return findInsertionPoint
+          ? { parent, direction: null, exists: true }
+          : current;
+      }
+
+      parent = current;
+      if (data < current.data) {
+        current = current.left;
+        if (findInsertionPoint && current === null) {
+          return { parent, direction: "left", exists: false };
+        }
+      } else {
+        current = current.right;
+        if (findInsertionPoint && current === null) {
+          return { parent, direction: "right", exists: false };
+        }
+      }
+
+      if (findInsertionPoint) {
+        return { parent: null, direction: null, exists: false };
+      }
+    }
+    return null;
+  }
 
   insert(value) {}
 
