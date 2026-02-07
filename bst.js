@@ -62,15 +62,29 @@ class Tree {
           return { parent, direction: "right", exists: false };
         }
       }
+    }
 
-      if (findInsertionPoint) {
-        return { parent: null, direction: null, exists: false };
-      }
+    if (findInsertionPoint) {
+      return { parent: null, direction: null, exists: false };
     }
     return null;
   }
 
-  insert(value) {}
+  insert(value) {
+    const newNode = new Node(value);
+    const searchResult = this._searchHelper(this.root, value, true);
+
+    if (searchResult.exists) return false;
+
+    if (searchResult.parent === null) {
+      this.root = newNode;
+    } else if (searchResult.direction === "left") {
+      searchResult.parent.left = newNode;
+    } else if (searchResult.direction === "right") {
+      searchResult.parent.right = newNode;
+    }
+    return true;
+  }
 
   delete(value) {}
 
