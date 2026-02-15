@@ -43,6 +43,7 @@ class Tree {
     if (root === null) return null;
 
     let current = root;
+    let parent = null;
     while (current !== null) {
       if (data === current.data) {
         return findInsertionPoint
@@ -86,9 +87,102 @@ class Tree {
     return true;
   }
 
-  delete(value) {}
+  _deleteSearchHelper(root, value) {
+    if (root === null) {
+      throw new Error("Cannot delete from an empty tree");
+    }
+    
+    let current = root;
+    let parent = null;
+    
+    while (current !== null) {
+      if (value === current.data) {
+        return { node: current, parent };
+      }
+      
+      parent = current;
+      if (value < current.data) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+    
+    throw new Error(`Value ${value} not found in tree`);
+  }
 
-  _findInOrderSuccessor(node) {}
+  deleteItem(value) {
+    try {
+      const { node, parent } = this._deleteSearchHelper(this.root, value);
+      
+      // Case 1: Leaf node (no children)
+      if (node.left === null && node.right === null) {
+        if (parent === null) {
+          // Deleting the root
+          this.root = null;
+        } else if (parent.left === node) {
+          parent.left = null;
+        } else {
+          parent.right = null;
+        }
+      }
+      // Case 2: Node with one child
+      else if (node.left === null || node.right === null) {
+        const child = node.left !== null ? node.left : node.right;
+        
+        if (parent === null) {
+          // Deleting the root, replace with child
+          this.root = child;
+        } else if (parent.left === node) {
+          parent.left = child;
+        } else {
+          parent.right = child;
+        }
+      }
+      // Case 3: Node with two children
+      else {
+        const { successor, successorParent } = this._findInOrderSuccessor(node);
+        const successorData = successor.data;
+        
+        // Remove the successor from its original position
+        if (successorParent === null) {
+          // Successor is the immediate right child of node
+          node.right = successor.right;
+        } else {
+          successorParent.left = successor.right;
+        }
+        
+        // Replace node's data with successor's data
+        node.data = successorData;
+      }
+      
+      return true;
+    } catch (error) {
+      console.error("Delete failed:", error.message);
+      return false;
+    }
+  }
+
+  _findInOrderSuccessor(node) {
+    if (node === null) {
+      throw new Error("Cannot find successor of null node");
+    }
+    
+    if (node.right === null) {
+      throw new Error("Node has no right child, cannot find in-order successor");
+    }
+    
+    let current = node.right;
+    let parent = null;
+    
+    // Traverse to the leftmost node in the right subtree
+    while (current.left !== null) {
+      parent = current;
+      current = current.left;
+    }
+    
+    return { successor: current, parent };
+  }
 
   search(value) {
     return this._searchHelper(this.root, value);
@@ -104,7 +198,6 @@ testTree.prettyPrint(testTree.root);
 
 console.log("\nInserting 10:");
 console.log("Insert successful:", testTree.insert(10));
-testTree.prettyPrint(testTree.root);
 
 console.log("\nInserting duplicate 10:");
 console.log("Insert successful:", testTree.insert(10));
@@ -112,13 +205,40 @@ console.log("Insert successful:", testTree.insert(10));
 console.log("\nInserting 2:");
 console.log("Insert successful:", testTree.insert(2));
 
-console.log("\nTesting searchHelper for existing value 8:");
-const searchResult = testTree._searchHelper(testTree.root, 8);
-console.log("Found:", searchResult ? searchResult.data : "not found");
+console.log("\n=== DELETE TESTS ===");
 
-console.log("\nTesting searchHelper for non-existent value 100:");
-const searchResult2 = testTree._searchHelper(testTree.root, 100);
-console.log("Found:", searchResult2 ? searchResult2.data : "not found");
+console.log("\nDeleting leaf node 1:");
+console.log("Delete successful:", testTree.deleteItem(1));
+testTree.prettyPrint(testTree.root);
 
-console.log("\nFinal tree:");
+console.log("\nDeleting node with one child (324):");
+console.log("Delete successful:", testTree.deleteItem(324));
+testTree.prettyPrint(testTree.root);
+
+console.log("\nDeleting node with two children (23):");
+console.log("Delete successful:", testTree.deleteItem(23));
+testTree.prettyPrint(testTree.root);
+
+console.log("\n=== COMPREHENSIVE DELETE TESTING ===");
+
+console.log("\n1. Deleting non-existent value (should fail):");
+console.log("Delete successful:", testTree.deleteItem(999));
+
+console.log("\n2. Deleting leaf node (2):");
+console.log("Delete successful:", testTree.deleteItem(2));
+
+console.log("\n3. Deleting node with one child (6345):");
+console.log("Delete successful:", testTree.deleteItem(6345));
+
+console.log("\n4. Checking current tree state:");
+console.log("Root is now:", testTree.root.data);
+console.log("Root's children:", 
+  testTree.root.left ? testTree.root.left.data : "null",
+  testTree.root.right ? testTree.root.right.data : "null"
+);
+
+console.log("\nDeleting node with two children (8):");
+console.log("Delete successful:", testTree.deleteItem(8));
+
+console.log("\n5. Final tree structure:");
 testTree.prettyPrint(testTree.root);

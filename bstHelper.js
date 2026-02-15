@@ -47,19 +47,21 @@ class Tree {
 
     while (current !== null) {
       if (data === current.data) {
-        return findInsertionPoint ? { parent, direction: null, exists: true } : current;
+        return findInsertionPoint
+          ? { parent, direction: null, exists: true }
+          : current;
       }
 
       parent = current;
       if (data < current.data) {
         current = current.left;
         if (findInsertionPoint && current === null) {
-          return { parent, direction: 'left', exists: false };
+          return { parent, direction: "left", exists: false };
         }
       } else {
         current = current.right;
         if (findInsertionPoint && current === null) {
-          return { parent, direction: 'right', exists: false };
+          return { parent, direction: "right", exists: false };
         }
       }
     }
@@ -86,9 +88,9 @@ class Tree {
 
     if (searchResult.parent === null) {
       this.root = newNode;
-    } else if (searchResult.direction === 'left') {
+    } else if (searchResult.direction === "left") {
       searchResult.parent.left = newNode;
-    } else if (searchResult.direction === 'right') {
+    } else if (searchResult.direction === "right") {
       searchResult.parent.right = newNode;
     }
 
@@ -103,6 +105,7 @@ class Tree {
     }
 
     const nodeToDelete = searchResult.parent;
+    console.log(searchResult.parent);
 
     if (nodeToDelete.left === null && nodeToDelete.right === null) {
       if (searchResult.parent === null) {
@@ -123,7 +126,10 @@ class Tree {
       }
     } else {
       const inOrderSuccessor = this._findInOrderSuccessor(nodeToDelete.right);
-      const inOrderSuccessorParent = this._searchHelper(this.root, inOrderSuccessor.data);
+      const inOrderSuccessorParent = this._searchHelper(
+        this.root,
+        inOrderSuccessor.data,
+      );
 
       nodeToDelete.data = inOrderSuccessor.data;
 
@@ -174,6 +180,10 @@ console.log("Found:", searchResult ? searchResult.data : "not found");
 console.log("\nTesting searchHelper for non-existent value 100:");
 const searchResult2 = testTree._searchHelper(testTree.root, 100);
 console.log("Found:", searchResult2 ? searchResult2.data : "not found");
+
+console.log("\nDeleting 7:");
+console.log("Delete successful:", testTree.delete(7));
+testTree.prettyPrint(testTree.root);
 
 console.log("\nFinal tree:");
 testTree.prettyPrint(testTree.root);
